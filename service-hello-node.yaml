@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    run: hello-node
+    app: hello-node
+  name: hello-node
+  namespace: default
+spec:
+  type: LoadBalancer
+  ports:
+  - port: 5679
+    protocol: TCP
+    targetPort: 8080
+  selector:
+    run: hello-node
