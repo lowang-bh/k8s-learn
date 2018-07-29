@@ -1,0 +1,26 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: hello-node
+  labels:
+    run: hello-node
+    app: hello-node
+  namespace: default
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      run: hello-node
+      app: hello-node
+  template:
+    metadata:
+      labels:
+        run: hello-node
+        app: hello-node
+    spec:
+      containers:
+      - image: hello-node:v1
+        name: hello-node
+        ports:
+        - containerPort: 8080
+          protocol: TCP
