@@ -10,8 +10,10 @@ fi
 
 echo "install training-operator"
 cd ~/go/src/github.com/kubeflow/training-operator
-kind load docker-image kubeflow/training-operator:latest kubeflow/training-operator:latest
+kind load docker-image kubeflow/training-operator:latest kubeflow/training-operator:latest --name ${ret}
 kubectl apply -k  manifests/overlays/standalone/
 
 echo "install volcano"
-helm install volcano installer/helm/chart/volcano --namespace volcano-system --create-namespace
+#helm install volcano installer/helm/chart/volcano --namespace volcano-system --create-namespace
+cd ~/go/src/github.com/volcano-sh/volcano
+kubectl apply -f installer/volcano-development.yaml
