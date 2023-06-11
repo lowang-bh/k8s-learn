@@ -1,0 +1,8 @@
+apiVersion: scheduling.volcano.sh/v1beta1
+kind: Queue
+metadata:
+  name: test
+spec:
+  guarantee: {}
+  reclaimable: true
+  weight: 1

@@ -1,0 +1,52 @@
+apiVersion: "kubeflow.org/v1"
+kind: "PyTorchJob"
+metadata:
+  name: "pytorch-dist-mnist-gloo"
+spec:
+  runPolicy:
+    cleanPodPolicy: Running
+    schedulingPolicy:
+      queue: test
+  pytorchReplicaSpecs:
+    Master:
+      replicas: 1
+      restartPolicy: OnFailure
+      template:
+        metadata:
+          annotations:
+            sidecar.istio.io/inject: "false"
+        spec:
+          schedulerName: volcano
+          containers:
+            - name: pytorch # must be pytorch
+              image: nginx:latest
+              # image: docker.io/kubeflowkatib/pytorch-mnist:v1beta1-45c5727
+              # command: ["/bin/sh","-c"]
+              # args: [python3 /opt/pytorch-mnist/mnist.py --epochs=1 && sleep 300]
+              # Comment out the below resources to use the CPU.
+              resources:
+                requests:
+                  cpu: 1
+                limits:
+                  cpu: 1
+    Worker:
+      replicas: 2
+      restartPolicy: OnFailure
+      template:
+        metadata:
+          annotations:
+            sidecar.istio.io/inject: "false"
+        spec:
+          schedulerName: volcano
+          containers: 
+            - name: pytorch # must be pytorch
+              image: nginx:latest
+              # image: docker.io/kubeflowkatib/pytorch-mnist:v1beta1-45c5727
+              # command: ["/bin/sh","-c"]
+              # args: [python3 /opt/pytorch-mnist/mnist.py --epochs=1 && sleep 300]
+              # Comment out the below resources to use the CPU.
+              resources:
+                requests:
+                  cpu: 1
+                limits:
+                  cpu: 1
