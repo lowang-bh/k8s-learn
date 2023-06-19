@@ -42,3 +42,4 @@ metadata:
   namespace: default
 spec:
   minMember: 2
+  queue: default
