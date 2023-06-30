@@ -1,0 +1,33 @@
+apiVersion: batch.volcano.sh/v1alpha1
+kind: Job
+metadata:
+  name: minavailable-job-taskminset
+spec:
+  schedulerName: volcano
+  tasks:
+    - replicas: 2
+      minAvailable: 1
+      name: "master"
+      template:
+        spec:
+          containers:
+            - image: nginx
+              name: nginx
+              resources:
+                requests:
+                  cpu: "50m"
+                  memory: "50Mi"
+          restartPolicy: OnFailure
+    - replicas: 2
+      minAvailable: 1
+      name: "work"
+      template:
+        spec:
+          containers:
+            - image: nginx
+              name: nginx
+              resources:
+                requests:
+                  cpu: "100m"
+                  memory: "100Mi"
+          restartPolicy: OnFailure
