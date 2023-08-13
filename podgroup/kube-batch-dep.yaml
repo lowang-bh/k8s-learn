@@ -1,7 +1,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: deploy-with-volcano
+  name: deploy-with-kubebatch
   labels:
     app: nginx
 spec:
@@ -18,11 +18,11 @@ spec:
         #to make deployment be scheduled into test queue
         #scheduling.volcano.sh/queue-name: test
         # need podgroup, otherwise it will use default pg with min member 1
-        scheduling.k8s.io/group-name: deploy-with-volcano-pg
+        scheduling.k8s.io/group-name: deploy-with-kubebatch-pg
     spec:
       # set spec.schedulerName to 'volcano' instead of
       # 'default-scheduler' for deployment.
-      schedulerName: volcano
+      schedulerName: kube-batch
       containers:
         - name: nginx
           image: nginx:latest
@@ -40,10 +40,12 @@ spec:
       nodeSelector:
         host.type: real
 ---
-apiVersion: scheduling.volcano.sh/v1beta1
+apiVersion: scheduling.incubator.k8s.io/v1alpha1
 kind: PodGroup
 metadata:
-  name: deploy-with-volcano-pg
+  annotations:
+    "scheduling.k8s.io/reclaimable": "true"
+  name: deploy-with-kubebatch-pg
   namespace: default
 spec:
   minMember: 2
