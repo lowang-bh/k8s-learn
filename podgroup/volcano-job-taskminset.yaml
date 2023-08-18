@@ -4,6 +4,7 @@ metadata:
   name: minavailable-job-taskminset
 spec:
   schedulerName: volcano
+  minAvailable: 3
   tasks:
     - replicas: 2
       minAvailable: 1
@@ -31,3 +32,4 @@ spec:
                   cpu: "100m"
                   memory: "100Mi"
           restartPolicy: OnFailure
+          priorityClassName: high-priority
