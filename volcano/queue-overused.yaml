@@ -1,0 +1,14 @@
+apiVersion: scheduling.volcano.sh/v1beta1
+kind: Queue
+metadata:
+  name: test-overused
+spec:
+  reclaimable: true
+  weight: 1
+  capability:
+    cpu: 1
+    memory: 1Gi
+  guarantee:
+    resource:
+      cpu: 1
+      memory: 1Gi

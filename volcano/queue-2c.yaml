@@ -1,0 +1,14 @@
+apiVersion: scheduling.volcano.sh/v1beta1
+kind: Queue
+metadata:
+  name: queue-2c
+spec:
+  reclaimable: true
+  weight: 1
+  guarantee:             
+    resource:            
+      cpu: 2
+      memory: 1Gi
+  capability:          
+      cpu: 2
+      memory: 1Gi

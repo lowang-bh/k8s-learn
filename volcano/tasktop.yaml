@@ -1,0 +1,29 @@
+apiVersion: batch.volcano.sh/v1alpha1
+kind: Job
+metadata:
+  annotations:
+    volcano.sh/task-topology-anti-affinity: "nginx"
+  name: example-job-1
+spec:
+  minAvailable: 5
+  schedulerName: volcano
+  plugins:
+    ssh: []
+    svc: []
+  tasks:
+    - replicas: 2
+      name: nginx
+      template:
+        spec:
+          containers:
+            - image: nginx:1.16.0
+              name: nginx-main
+          restartPolicy: OnFailure
+    - replicas: 3
+      name: mysql
+      template:
+        spec:
+          containers:
+            - image: nginx:1.16.0 
+              name: mysql-main
+          restartPolicy: OnFailure
