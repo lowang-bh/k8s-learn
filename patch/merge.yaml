@@ -1,0 +1,8 @@
+# kubectl patch deployments.apps patch-demo --type=merge --patch-file merge.yaml
+# replace
+spec:
+  template:
+    spec:
+      containers:
+      - name: patch-demo-ctr-3
+        image: hello-go:hello-v4

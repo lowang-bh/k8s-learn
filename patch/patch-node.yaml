@@ -1,0 +1,8 @@
+metadata:
+  annotations:
+    load.cpu.5m:
+      "50"
+    load.cpu.30m:
+      "70"
+    "load.memory.5m": "40"
+    "load.memory.30m": "30"

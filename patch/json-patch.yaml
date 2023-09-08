@@ -1,0 +1,9 @@
+# kubectl patch deployments.apps patch-demo --type=json --patch-file json-patch.yaml
+# op support: "add", "remove", "replace", "move" and "copy"
+[
+{
+  "op": "replace",
+  "path": "/spec/template/spec/containers",
+  "value": [{"name": "patch-demo-ctr-4", "image": "hello-go:hello-v4"}]
+}
+]
