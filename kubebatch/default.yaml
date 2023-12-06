@@ -1,0 +1,10 @@
+apiVersion: scheduling.incubator.k8s.io/v1alpha1
+kind: Queue
+metadata:
+  name: default
+spec:
+  weight: 1
+  capability:
+    cpu: "50"
+    memory: 220Gi
+    nvidia.com/gpu: 4

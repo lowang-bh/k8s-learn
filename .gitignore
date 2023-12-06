@@ -1,1 +1,8 @@
 .vscode/
+kubebatch/resource_queue_v1.yaml
+kubebatch/default-resourcequeue.yaml
+kubebatch/registry_secret.yaml
+kubebatch/server-service-token.yaml
+kubebatch/mysql-secret.yaml
+kubebatch/redis-secret.yaml
+kubebatch/ingress.yaml

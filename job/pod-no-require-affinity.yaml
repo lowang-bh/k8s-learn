@@ -1,0 +1,31 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: pod-no-require-affinity
+spec:
+  backoffLimit: 3
+  completions: 3
+  parallelism: 3
+  template:
+    metadata:
+      annotations:
+        scheduling.k8s.io/group-name: pod-no-require-affinity
+    spec:
+      affinity:
+        # nodeAffinity:
+        #   requiredDuringSchedulingIgnoredDuringExecution:
+        #     nodeSelectorTerms:
+        #     - {} # can not schedule: didn''t match Pod''s node affinity/selector
+        podAntiAffinity: {} # can schedule
+      containers:
+      - image: busybox
+        imagePullPolicy: IfNotPresent
+        name: busybox
+        command: ['/bin/sh']
+        args: ['-c', 'sleep 30']
+        resources:
+          requests:
+            cpu: 500m
+      restartPolicy: Never
+      terminationGracePeriodSeconds: 1
+      #schedulerName: kube-batch

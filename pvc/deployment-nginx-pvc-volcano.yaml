@@ -1,0 +1,59 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: deployment-volcano-pvc
+spec:
+  selector:
+    matchLabels:
+      app: deployment-volcano-pvc
+  replicas: 1
+  template:
+    metadata:
+      annotations:
+        scheduling.k8s.io/group-name: pg-volcano-pvc
+      labels:
+        app: deployment-volcano-pvc
+    spec:
+      schedulerName: volcano
+      terminationGracePeriodSeconds: 1
+      containers:
+        - name: nginx
+          image: nginx:1.14.2
+          ports:
+            - containerPort: 8080
+          resources:
+            requests:
+              cpu: '100m'
+              memory: 100Mi
+            limits:
+              cpu: '100m'
+              memory: 100Mi
+          volumeMounts:
+            - mountPath: /mnt/claim
+              name: local-vol
+      volumes:
+        - name: local-vol
+          persistentVolumeClaim:
+            claimName: claim-for-deployment-volcano-pvc
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: claim-for-deployment-volcano-pvc
+spec:
+  accessModes:
+  - ReadWriteOnce
+  resources:
+    requests:
+      storage: 100Mi
+  # storageClassName: csi-lvm # null to use default storage class
+  volumeMode: Filesystem
+---
+apiVersion: scheduling.volcano.sh/v1beta1
+kind: PodGroup
+metadata:
+  name: pg-volcano-pvc
+  namespace: default
+spec:
+  minMember: 1
+  queue: default

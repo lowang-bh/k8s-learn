@@ -1,0 +1,98 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: kube-batch
+  name: kube-batch
+  namespace: kube-system
+spec:
+  progressDeadlineSeconds: 600
+  replicas: 1
+  selector:
+    matchLabels:
+      app: kube-batch
+  strategy:
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        app: kube-batch
+    spec:
+      containers:
+      - args:
+        - --logtostderr
+        - --v
+        - "3"
+        - --leader-elect
+        - --priority-class=false
+        - --lock-object-namespace
+        - kube-system
+        - --scheduler-conf
+        - /etc/kube-batch/kube-batch-scheduler-conf.yaml
+        - --schedule-period
+        - 3s
+        - --redis=redis-leader.kube-system:6379
+        - --mysql-host=127.0.0.1:3306
+        env:
+        - name: CLIENT_TOKEN
+          value: faketoken
+        - name: MYSQL_ROOT_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              key: mysql-root-password
+              name: mysql-secret
+        - name: CURRENT_NAMESPACE
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.namespace
+        - name: CURRENT_IP
+          valueFrom:
+            fieldRef:
+              fieldPath: status.podIP
+        image: kubesigs/kube-batch:release_v2.3.6
+        imagePullPolicy: IfNotPresent
+        name: kube-batch
+        livenessProbe:
+          initialDelaySeconds: 20
+          httpGet:
+            path: /api/ping
+            port: 8080
+        readinessProbe:
+          initialDelaySeconds: 20
+          failureThreshold: 5
+          periodSeconds: 5
+          httpGet:
+            path: /api/ping
+            port: 8080
+        resources:
+          limits:
+            cpu: "200m"
+            memory: 100Mi
+          requests:
+            cpu: "200m"
+            memory: 100Mi
+        volumeMounts:
+        - mountPath: /etc/kube-batch
+          name: kube-batch-config
+          readOnly: true
+      # - name: redis
+      #   image: redis:5.0.8
+      #   imagePullPolicy: IfNotPresent
+      dnsPolicy: ClusterFirst
+      priorityClassName: system-cluster-critical
+      restartPolicy: Always
+      serviceAccount: kube-batch-sa
+      serviceAccountName: kube-batch-sa
+      terminationGracePeriodSeconds: 30
+      tolerations:
+      - effect: NoSchedule
+        key: node-role.kubernetes.io/control-plane
+        operator: Exists
+      volumes:
+      - configMap:
+          defaultMode: 420
+          name: kube-batch-scheduler-conf
+        name: kube-batch-config
