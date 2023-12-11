@@ -1,0 +1,33 @@
+apiVersion: scheduling.volcano.sh/v1beta1
+kind: Queue
+metadata:
+  name: queue-a
+spec:
+  capability:
+    cpu: "4"
+    memory: "2Gi"
+---
+apiVersion: batch.volcano.sh/v1alpha1
+kind: Job
+metadata:
+  name: job-high
+spec:
+  schedulerName: volcano
+  priorityClassName: high-priority
+  queue: queue-a
+  tasks:
+    - replicas: 1
+      name: "default-nginx"
+      template:
+        metadata:
+          name: web
+        spec:
+          containers:
+            - image: nginx:1.14.2
+              imagePullPolicy: IfNotPresent
+              name: nginx
+              resources:
+                requests:
+                  cpu: "3"
+                  memory: "1Gi"
+          restartPolicy: OnFailure

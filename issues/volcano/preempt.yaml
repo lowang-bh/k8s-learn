@@ -1,0 +1,40 @@
+---
+apiVersion: scheduling.volcano.sh/v1beta1
+kind: Queue
+metadata:
+  name: queue-a
+spec:
+  capability:
+    cpu: "4"
+---
+apiVersion: scheduling.k8s.io/v1
+kind: PriorityClass
+metadata:
+  name: low-priority
+value: 10
+globalDefault: false
+---
+apiVersion: batch.volcano.sh/v1alpha1
+kind: Job
+metadata:
+  name: job-low-1
+spec:
+  schedulerName: volcano
+  priorityClassName: low-priority
+  queue: queue-a
+  minAvailable: 1
+  tasks:
+    - replicas: 3
+      name: "default-nginx"
+      template:
+        metadata:
+          name: web
+        spec:
+          containers:
+            - image: nginx:1.14.2
+              imagePullPolicy: IfNotPresent
+              name: nginx
+              resources:
+                requests:
+                  cpu: "1"
+          restartPolicy: OnFailure
