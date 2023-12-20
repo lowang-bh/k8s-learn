@@ -34,16 +34,11 @@ spec:
         - /etc/kube-batch/kube-batch-scheduler-conf.yaml
         - --schedule-period
         - 3s
-        - --redis=redis-leader.kube-system:6379
-        - --mysql-host=127.0.0.1:3306
+        #- --redis=redis-leader.kube-system:6379 # uncomment this line for external redis
+        - --redis=127.0.0.1:6379
         env:
         - name: CLIENT_TOKEN
           value: faketoken
-        - name: MYSQL_ROOT_PASSWORD
-          valueFrom:
-            secretKeyRef:
-              key: mysql-root-password
-              name: mysql-secret
         - name: CURRENT_NAMESPACE
           valueFrom:
             fieldRef:
@@ -52,7 +47,7 @@ spec:
           valueFrom:
             fieldRef:
               fieldPath: status.podIP
-        image: kubesigs/kube-batch:release_v2.3.6
+        image: kubesigs/kube-batch:release_v2.3.8
         imagePullPolicy: IfNotPresent
         name: kube-batch
         livenessProbe:
@@ -78,9 +73,16 @@ spec:
         - mountPath: /etc/kube-batch
           name: kube-batch-config
           readOnly: true
-      # - name: redis
-      #   image: redis:5.0.8
-      #   imagePullPolicy: IfNotPresent
+      - name: redis
+        image: redis:5.0.8
+        imagePullPolicy: IfNotPresent
+        resources:
+          limits:
+            cpu: "100m"
+            memory: 100Mi
+          requests:
+            cpu: "100m"
+            memory: 100Mi
       dnsPolicy: ClusterFirst
       priorityClassName: system-cluster-critical
       restartPolicy: Always

@@ -2,6 +2,6 @@ apiVersion: scheduling.k8s.io/v1
 kind: PriorityClass
 metadata:
   name: ultra-high-priority
-value: 4500
+value: 7500
 globalDefault: false
-description: "This priority class is a ultra high prority, used control task queue order"
+description: "This priority class is a ultra high priority, used control task queue order"

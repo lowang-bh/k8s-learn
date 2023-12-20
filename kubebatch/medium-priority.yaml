@@ -4,4 +4,4 @@ metadata:
   name: medium-priority
 value: 2500
 globalDefault: false
-description: "This priority class has a medium prority"
+description: "This priority class has a medium priority"

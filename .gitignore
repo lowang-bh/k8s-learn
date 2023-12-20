@@ -6,3 +6,4 @@ kubebatch/server-service-token.yaml
 kubebatch/mysql-secret.yaml
 kubebatch/redis-secret.yaml
 kubebatch/ingress.yaml
+kubebatch/scheduler-configmap.yaml

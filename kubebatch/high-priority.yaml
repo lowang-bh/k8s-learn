@@ -4,4 +4,4 @@ metadata:
   name: high-priority
 value: 5000
 globalDefault: false
-description: "This priority class has a high prority"
+description: "This priority class has a high priority"

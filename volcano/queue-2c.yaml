@@ -5,8 +5,8 @@ metadata:
 spec:
   reclaimable: true
   weight: 1
-  guarantee:             
-    resource:            
+  guarantee:
+    resource:
       cpu: 2
       memory: 1Gi
   capability:          
