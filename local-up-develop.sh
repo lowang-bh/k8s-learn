@@ -3,7 +3,7 @@ ret=$(kind get clusters|head -n 1)
 if [ -z "$ret" ]; then
     echo  "bring up kind cluster"
     cd  ~/go/src/github.com/lowang-bh/demo/kind
-    kind create cluster --config cluster-v1.26.yaml
+    kind create cluster --config cluster-v1.27.yaml
     ret=$(kind get clusters|head -n 1)
 else
     echo "already exist cluster: $ret"
