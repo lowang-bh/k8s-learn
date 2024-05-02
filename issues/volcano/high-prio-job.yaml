@@ -16,7 +16,7 @@ spec:
   priorityClassName: high-priority
   queue: queue-a
   tasks:
-    - replicas: 1
+    - replicas: 2
       name: "default-nginx"
       template:
         metadata:
@@ -28,6 +28,6 @@ spec:
               name: nginx
               resources:
                 requests:
-                  cpu: "3"
+                  cpu: "1500m"
                   memory: "1Gi"
           restartPolicy: OnFailure

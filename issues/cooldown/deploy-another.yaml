@@ -1,0 +1,28 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: deployment-another
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: deployment-another
+  template:
+    metadata:
+      labels:
+        app: deployment-another
+    spec:
+      containers:
+      - name: nginx
+        image: nginx:1.14.2
+        ports:
+          - containerPort: 8080
+        resources:
+          limits:
+            cpu: "1000m"
+            memory: 100Mi
+          requests:
+            cpu: "1000m"
+            memory: 100Mi
+      priorityClassName: low-priority
+      terminationGracePeriodSeconds: 5

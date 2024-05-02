@@ -1,0 +1,27 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  labels:
+    app: p1
+  name: p1
+  # finalizers: # node will free the resources and schedule new pod
+  # - example.com/dummy
+spec:
+  terminationGracePeriodSeconds: 135
+  containers:
+  - image: nginx:latest
+    name: pause
+    lifecycle:
+      postStart:
+        exec:
+          command: ["/bin/sh", "-c", "echo Hello from the postStart handler > /usr/share/message"]
+      preStop:
+        exec:
+          command: ["/bin/sh","-c","sleep 100; nginx -s quit; while killall -0 nginx; do sleep 1; done"]
+    resources:
+      requests:
+        cpu: 4000m
+        memory: 200Mi
+      limits:
+        cpu: 4000m
+        memory: 200Mi

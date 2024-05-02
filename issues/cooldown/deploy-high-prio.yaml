@@ -1,0 +1,26 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: deployment-high
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: deployment-high
+  template:
+    metadata:
+      labels:
+        app: deployment-high
+    spec:
+      containers:
+      - name: nginx
+        image: nginx:1.14.2
+        resources:
+          limits:
+            cpu: "3000m"
+            memory: 100Mi
+          requests:
+            cpu: "3000m"
+            memory: 100Mi
+      priorityClassName: high-priority
+      terminationGracePeriodSeconds: 30

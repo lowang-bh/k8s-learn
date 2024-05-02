@@ -1,0 +1,70 @@
+apiVersion: batch.volcano.sh/v1alpha1
+kind: Job
+metadata:
+  annotations:
+    volcano.sh/task-topology-affinity: "master,worker"
+    volcano.sh/task-topology-anti-affinity: "worker"
+    volcano.sh/task-topology-task-order: "worker,master"
+  name: ps-worker-topology
+spec:
+  schedulerName: volcano
+  minAvailable: 8
+  tasks:
+    - replicas: 8
+      minAvailable: 4
+      name: "master"
+      template:
+        spec:
+          affinity:
+            nodeAffinity:
+              requiredDuringSchedulingIgnoredDuringExecution:
+                nodeSelectorTerms:
+                  - matchExpressions:
+                      - key: host.type
+                        operator: In
+                        values:
+                          - virtual
+          tolerations:
+            - key: "kwok.x-k8s.io/node"
+              operator: "Exists"
+              effect: "NoSchedule"
+          containers:
+            - image: master
+              name: master
+              resources:
+                requests:
+                  cpu: "5"
+                  memory: "20Gi"
+          restartPolicy: OnFailure
+    - replicas: 8
+      minAvailable: 4
+      name: "work"
+      template:
+        spec:
+          affinity:
+            nodeAffinity:
+              requiredDuringSchedulingIgnoredDuringExecution:
+                nodeSelectorTerms:
+                  - matchExpressions:
+                      - key: host.type
+                        operator: In
+                        values:
+                          - virtual
+          tolerations:
+            - key: "kwok.x-k8s.io/node"
+              operator: "Exists"
+              effect: "NoSchedule"
+          containers:
+            - image: work
+              name: work
+              resources:
+                requests:
+                  cpu: "8"
+                  memory: "30Gi"
+                  nvidia.com/gpu: 1
+                limits:
+                  cpu: "8"
+                  memory: "30Gi"
+                  nvidia.com/gpu: 1
+          restartPolicy: OnFailure
+          priorityClassName: high-priority
