@@ -1,0 +1,35 @@
+apiVersion: batch.volcano.sh/v1alpha1
+kind: Job
+metadata:
+  name: my-apps
+spec:
+  schedulerName: volcano
+  minAvailable: 2
+  tasks:
+    - replicas: 2
+      name: "web"
+      minAvailable: 1
+      template:
+        spec:
+          containers:
+            - image: nginx:1.14.2
+              name: web
+              resources:
+                requests:
+                  cpu: "1000m"
+                  memory: "100Mi"
+          restartPolicy: OnFailure
+    - replicas: 2
+      minAvailable: 1
+      name: "server"
+      template:
+        spec:
+          containers:
+            - image: nginx:1.14.2
+              name: server
+              resources:
+                requests:
+                  cpu: "2000m"
+                  memory: "100Mi"
+          restartPolicy: OnFailure
+          priorityClassName: high-priority

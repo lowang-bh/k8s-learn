@@ -1,0 +1,41 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: job-a
+spec:
+  backoffLimit: 3
+  completions: 3
+  parallelism: 3
+  template:
+    metadata:
+      annotations:
+        scheduling.k8s.io/group-name: job-a-pg
+        volcano.sh/preemptable: "true"
+    spec:
+      containers:
+      - image: nginx:1.14.2
+        imagePullPolicy: IfNotPresent
+        name: nginx
+        ports:
+          - containerPort: 80
+        resources:
+          requests:
+            cpu: 1000m
+            memory: 200Mi
+          limits:
+            cpu: 1000m
+            memory: 200Mi
+      restartPolicy: Never
+      terminationGracePeriodSeconds: 1
+      schedulerName: volcano
+---
+apiVersion: scheduling.volcano.sh/v1beta1
+kind: PodGroup
+metadata:
+  annotations:
+    scheduling.k8s.io/reclaimable: "true"
+  name: job-a-pg
+  namespace: default
+spec:
+  minMember: 2
+  queue: queue-a

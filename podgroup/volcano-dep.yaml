@@ -18,7 +18,7 @@ spec:
         #to make deployment be scheduled into test queue
         #scheduling.volcano.sh/queue-name: test
         # need podgroup, otherwise it will use default pg with min member 1
-        #scheduling.k8s.io/group-name: deploy-with-volcano-pg
+        scheduling.k8s.io/group-name: deploy-with-volcano-pg
     spec:
       # set spec.schedulerName to 'volcano' instead of
       # 'default-scheduler' for deployment.
