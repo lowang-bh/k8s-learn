@@ -4,11 +4,15 @@ metadata:
   name: job5
 spec:
   schedulerName: volcano
-  queue: test-overused
+  queue: queue-a #test-overuse
   tasks:
     - replicas: 2
       name: "master"
       template:
+        metadata:
+          annotations:
+            scheduling.k8s.io/group-name: vcjob-1
+            volcano.sh/preemptable: true
         spec:
           containers:
             - image: nginx
@@ -22,6 +26,10 @@ spec:
       minAvailable: 1
       name: "work"
       template:
+        metadata:
+          annotations:
+            scheduling.k8s.io/group-name: vcjob-1
+            volcano.sh/preemptable: true
         spec:
           containers:
             - image: nginx

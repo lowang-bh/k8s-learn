@@ -1,0 +1,24 @@
+apiVersion: batch.volcano.sh/v1alpha1
+kind: Job
+metadata:
+  name: job-b
+spec:
+  schedulerName: volcano
+  queue: queue-b
+  tasks:
+    - replicas: 5
+      minAvailable: 2
+      name: "worker"
+      template:
+        metadata:
+          annotations:
+            volcano.sh/preemptable: "true"
+        spec:
+          containers:
+            - image: nginx:1.14.2
+              name: nginx
+              resources:
+                requests:
+                  cpu: "2"
+                  memory: "50Mi"
+          restartPolicy: OnFailure

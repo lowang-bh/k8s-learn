@@ -1,0 +1,66 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: job-anti-first
+spec:
+  backoffLimit: 1
+  completions: 1
+  parallelism: 1
+  template:
+    metadata:
+      annotations:
+        scheduling.k8s.io/group-name: job-anti-first
+      labels:
+        app: job-anti-first
+    spec:
+      affinity:
+        podAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+          - podAffinityTerm:
+              labelSelector:
+                matchExpressions:
+                - key: app
+                  operator: In
+                  values:
+                  - job-first
+              topologyKey: kubernetes.io/hostname
+            weight: 100
+        # podAntiAffinity:
+        #   requiredDuringSchedulingIgnoredDuringExecution:
+        #   - labelSelector:
+        #       matchExpressions:
+        #       - key: app
+        #         operator: In
+        #         values:
+        #         - job-first
+        #     topologyKey: kubernetes.io/hostname
+      containers:
+      - image: busybox
+        imagePullPolicy: IfNotPresent
+        name: busybox
+        command: ['/bin/sh']
+        args: ['-c', 'sleep infinity']
+        resources:
+          requests:
+            cpu: 1000m
+            memory: 1Gi
+      restartPolicy: Never
+      terminationGracePeriodSeconds: 1
+      schedulerName: kube-batch
+      tolerations:
+      - effect: NoSchedule
+        key: node.kubernetes.io/unschedulable
+        operator: Exists
+      - effect: NoSchedule
+        key: node-role.kubernetes.io/control-plane
+        operator: Exists
+---
+apiVersion: scheduling.incubator.k8s.io/v1alpha1
+kind: PodGroup
+metadata:
+  annotations:
+    scheduling.k8s.io/reclaimable: "true"
+  name: job-anti-first
+spec:
+  minMember: 1
+  queue: default
